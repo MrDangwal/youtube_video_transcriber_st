@@ -3,3 +3,4 @@ pytube
 faster_whisper
 streamlit
 fake-useragent
+requests
