@@ -4,6 +4,7 @@ from pytube import YouTube
 import pandas as pd
 import os
 import time
+from fake_useragent import UserAgent
 
 # Define filename as a global variable
 filename = ""
@@ -11,7 +12,9 @@ filename = ""
 def download_youtube_video(url):
     global filename  # Use the global variable
     st.write("Downloading YouTube video...")
-    yt = YouTube(url)
+    ua = UserAgent()
+    headers = {'User-Agent': ua.random}
+    yt = YouTube(url, headers=headers)
     video = yt.streams.filter(only_audio=True).first()
     filename = f"{yt.title}.mp3"
     video.download(output_path=".", filename=filename)
