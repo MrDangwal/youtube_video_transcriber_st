@@ -5,6 +5,7 @@ import pandas as pd
 import os
 import time
 from fake_useragent import UserAgent
+import requests
 
 # Define filename as a global variable
 filename = ""
@@ -14,11 +15,17 @@ def download_youtube_video(url):
     st.write("Downloading YouTube video...")
     ua = UserAgent()
     headers = {'User-Agent': ua.random}
-    yt = YouTube(url, headers=headers)
-    video = yt.streams.filter(only_audio=True).first()
-    filename = f"{yt.title}.mp3"
-    video.download(output_path=".", filename=filename)
-    return filename
+    
+    try:
+        response = requests.get(url, headers=headers)
+        yt = YouTube(response.text)
+        video = yt.streams.filter(only_audio=True).first()
+        filename = f"{yt.title}.mp3"
+        video.download(output_path=".", filename=filename)
+        return filename
+    except Exception as e:
+        st.error(f"Error downloading YouTube video: {e}")
+        return None
 
 def transcribe_audio(filename):
     st.write("Transcribing audio...")
