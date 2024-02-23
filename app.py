@@ -4,7 +4,11 @@ from pytube import YouTube
 import pandas as pd
 import os
 
+# Define filename as a global variable
+filename = ""
+
 def download_youtube_video(url):
+    global filename  # Use the global variable
     st.write("Downloading YouTube video...")
     yt = YouTube(url)
     video = yt.streams.filter(only_audio=True).first()
@@ -38,6 +42,7 @@ def save_transcription(segments, output_filename):
 def main():
     st.title("YouTube Audio Transcription")
 
+    global filename  # Use the global variable
     youtube_url = st.text_input("Enter YouTube URL:")
     output_filename = st.text_input("Enter output filename:", "transcription_data.csv")
 
