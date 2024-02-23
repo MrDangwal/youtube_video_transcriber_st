@@ -1,0 +1,4 @@
+pandas
+pytube
+faster_whisper
+streamlit
