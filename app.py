@@ -3,9 +3,7 @@ from faster_whisper import WhisperModel
 from pytube import YouTube
 import pandas as pd
 import os
-import time
-from fake_useragent import UserAgent
-import requests
+import time  # Import the time module for simulating progress
 
 # Define filename as a global variable
 filename = ""
@@ -13,34 +11,41 @@ filename = ""
 def download_youtube_video(url):
     global filename  # Use the global variable
     st.write("Downloading YouTube video...")
-    ua = UserAgent()
-    headers = {'User-Agent': ua.random}
-    
-    try:
-        response = requests.get(url, headers=headers)
-        yt = YouTube(response.text)
-        video = yt.streams.filter(only_audio=True).first()
-        filename = f"{yt.title}.mp3"
-        video.download(output_path=".", filename=filename)
-        return filename
-    except Exception as e:
-        st.error(f"Error downloading YouTube video: {e}")
-        return None
+
+    # Simulate download progress
+    progress_bar = st.progress(0)
+    for percent_complete in range(0, 101, 10):
+        time.sleep(0.1)
+        progress_bar.progress(percent_complete)
+
+    yt = YouTube(url)
+    video = yt.streams.filter(only_audio=True).first()
+    filename = f"{yt.title}.mp3"
+    video.download(output_path=".", filename=filename)
+    return filename
 
 def transcribe_audio(filename):
     st.write("Transcribing audio...")
+
+    # Simulate transcription progress
+    progress_bar = st.progress(0)
+    for percent_complete in range(0, 101, 10):
+        time.sleep(0.1)
+        progress_bar.progress(percent_complete)
+
     model = WhisperModel("tiny.en")
     segments, info = model.transcribe(filename)
-
-    # Simulate progress with a dummy progress bar
-    for i in range(100):
-        time.sleep(0.05)  # Simulate processing time
-        st.progress(i + 1)
-
     return segments
 
 def save_transcription(segments, output_filename):
     st.write("Processing transcription...")
+
+    # Simulate save progress
+    progress_bar = st.progress(0)
+    for percent_complete in range(0, 101, 10):
+        time.sleep(0.1)
+        progress_bar.progress(percent_complete)
+
     start_times = []
     end_times = []
     texts = []
@@ -52,6 +57,13 @@ def save_transcription(segments, output_filename):
     df = pd.DataFrame({'Start Time': start_times, 'End Time': end_times, 'Text': texts})
 
     st.write("Saving transcription data...")
+
+    # Simulate final save progress
+    progress_bar = st.progress(0)
+    for percent_complete in range(0, 101, 10):
+        time.sleep(0.1)
+        progress_bar.progress(percent_complete)
+
     df.to_csv(output_filename, index=False)
     os.remove(filename)
     st.write("Transcription data saved successfully!")
