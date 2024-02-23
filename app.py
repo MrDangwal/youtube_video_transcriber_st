@@ -3,6 +3,7 @@ from faster_whisper import WhisperModel
 from pytube import YouTube
 import pandas as pd
 import os
+import time
 
 # Define filename as a global variable
 filename = ""
@@ -24,16 +25,19 @@ def transcribe_audio(filename):
 
 def save_transcription(segments, output_filename):
     st.write("Processing transcription...")
+    progress_bar = st.progress(0)
     start_times = []
     end_times = []
     texts = []
-    for segment in segments:
+    total_segments = len(segments)
+    for i, segment in enumerate(segments):
         start_times.append(segment.start)
         end_times.append(segment.end)
         texts.append(segment.text)
-
+        progress = (i + 1) / total_segments
+        progress_bar.progress(progress)
+        time.sleep(0.1)  # Simulate processing time
     df = pd.DataFrame({'Start Time': start_times, 'End Time': end_times, 'Text': texts})
-
     st.write("Saving transcription data...")
     df.to_csv(output_filename, index=False)
     os.remove(filename)
