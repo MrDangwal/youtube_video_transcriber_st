@@ -6,34 +6,21 @@ import time
 from fake_useragent import UserAgent
 import requests
 from youtube_dl import YoutubeDL
-from urllib.parse import urlparse, parse_qs
+def download_youtube_audio(url):
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }
 
-def extract_video_id(youtube_url):
-    parsed_url = urlparse(youtube_url)
-    query_params = parse_qs(parsed_url.query)
-    video_id = query_params.get('v')
-    if video_id:
-        return video_id[0]
-    else:
-        return None
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info_dict = ydl.extract_info(url, download=False)
+        filename = f"{info_dict['title']}.mp3"
+        ydl.download([url])  # This line triggers the download
 
-def download_youtube_video(url):
-    global filename
-    st.write("Downloading YouTube video...")
-
-    progress_bar = st.progress(0)
-    for percent_complete in range(0, 101, 10):
-        time.sleep(0.1)
-        progress_bar.progress(percent_complete)
-
-    video_id = extract_video_id(url)
-    if not video_id:
-        st.error("Invalid YouTube URL. Please provide a valid YouTube video URL.")
-        return None
-
-    yt = YoutubeDL()
-    info_dict = yt.extract_info(video_id, download=True)
-    filename = f"{info_dict['title']}.mp3"
     return filename
 
 def transcribe_audio(filename):
