@@ -3,8 +3,9 @@ from faster_whisper import WhisperModel
 import pandas as pd
 import os
 import time
-import youtube_dl
 from fake_useragent import UserAgent
+import requests
+from youtube_dl import YoutubeDL
 from urllib.parse import urlparse, parse_qs
 
 def extract_video_id(youtube_url):
