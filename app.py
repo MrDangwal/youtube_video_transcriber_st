@@ -6,20 +6,15 @@ import time
 from fake_useragent import UserAgent
 import requests
 from youtube_dl import YoutubeDL
-def download_youtube_audio(url):
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }
+from pytube import YouTube
 
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=False)
-        filename = f"{info_dict['title']}.mp3"
-        ydl.download([url])  # This line triggers the download
+def download_youtube_audio(url):
+    st.write("Downloading YouTube audio...")
+
+    yt = YouTube(url)
+    audio_stream = yt.streams.filter(only_audio=True).first()
+    filename = f"{yt.title}.mp3"
+    audio_stream.download(filename=filename)
 
     return filename
 
