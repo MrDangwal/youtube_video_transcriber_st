@@ -1,15 +1,15 @@
 import streamlit as st
 from faster_whisper import WhisperModel
-from yt_dlp import YoutubeDL
 import pandas as pd
 import os
 import time
 from fake_useragent import UserAgent
-
-filename = ""
+import requests
+from pytube import YouTube
+from fake_useragent import UserAgent
 
 def download_youtube_video(url):
-    global filename  
+    global filename
     st.write("Downloading YouTube video...")
 
     progress_bar = st.progress(0)
@@ -18,21 +18,14 @@ def download_youtube_video(url):
         progress_bar.progress(percent_complete)
 
     ua = UserAgent()
-    # Set custom headers with a fake user agent
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegVideoConvertor',
-            'preferedformat': 'mp3',
-        }],
-        'outtmpl': './%(title)s.%(ext)s',
-        'quiet': False,
-        'headers': {'User-Agent': ua.random}
-    }
+    headers = {'User-Agent': ua.random}
+    response = requests.get(url, headers=headers)
+    yt = YouTube(url, defer_prefetch_init=True)
+    stream = yt.streams.filter(only_audio=True).first()
 
-    with YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=True)
-        filename = ydl.prepare_filename(info_dict)
+    filename = f"{yt.title}.mp3"
+    with open(filename, 'wb') as f:
+        f.write(response.content)
 
     return filename
 
