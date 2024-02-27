@@ -71,7 +71,7 @@ def main():
 
     if st.button("Download and Transcribe"):
         
-        filename = download_youtube_video(youtube_url)
+        filename = download_youtube_audio(youtube_url)
 
         
         segments = transcribe_audio(filename)
