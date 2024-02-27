@@ -6,7 +6,7 @@ import time
 from fake_useragent import UserAgent
 import requests
 from pytube import YouTube
-from fake_useragent import UserAgent
+
 
 def download_youtube_video(url):
     global filename
@@ -20,7 +20,7 @@ def download_youtube_video(url):
     ua = UserAgent()
     headers = {'User-Agent': ua.random}
     response = requests.get(url, headers=headers)
-    yt = YouTube(url, defer_prefetch_init=True)
+    yt = YouTube(url)
     stream = yt.streams.filter(only_audio=True).first()
 
     filename = f"{yt.title}.mp3"
