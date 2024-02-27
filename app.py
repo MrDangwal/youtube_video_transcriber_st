@@ -19,13 +19,14 @@ def download_youtube_video(url):
 
     ua = UserAgent()
     headers = {'User-Agent': ua.random}
-    response = requests.get(url, headers=headers)
-    yt = YouTube(url)
-    stream = yt.streams.filter(only_audio=True).first()
+    response = requests.get(url, headers=headers, stream=True)
+    video = YouTube(url)
+    filename = f"{video.title}.mp3"
 
-    filename = f"{yt.title}.mp3"
     with open(filename, 'wb') as f:
-        f.write(response.content)
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
 
     return filename
 
