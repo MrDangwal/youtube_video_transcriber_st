@@ -3,10 +3,8 @@ from faster_whisper import WhisperModel
 import pandas as pd
 import os
 import time
+import youtube_dl
 from fake_useragent import UserAgent
-import requests
-from pytube import YouTube
-
 
 def download_youtube_video(url):
     global filename
@@ -17,16 +15,21 @@ def download_youtube_video(url):
         time.sleep(0.1)
         progress_bar.progress(percent_complete)
 
-    ua = UserAgent()
-    headers = {'User-Agent': ua.random}
-    response = requests.get(url, headers=headers, stream=True)
-    video = YouTube(url)
-    filename = f"{video.title}.mp3"
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'outtmpl': './%(title)s.%(ext)s',
+        'quiet': False,
+        'user_agent': UserAgent().random
+    }
 
-    with open(filename, 'wb') as f:
-        for chunk in response.iter_content(chunk_size=1024):
-            if chunk:
-                f.write(chunk)
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info_dict = ydl.extract_info(url, download=True)
+        filename = ydl.prepare_filename(info_dict)
 
     return filename
 
