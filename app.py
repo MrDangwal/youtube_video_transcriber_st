@@ -19,7 +19,7 @@ def download_youtube_audio(url):
     return filename
 
 def transcribe_audio(filename):
-    st.write("Transcribing audio...")
+    st.write("Transcribing audio 🎵 🎵...")
 
     
     progress_bar = st.progress(0)
@@ -32,7 +32,7 @@ def transcribe_audio(filename):
     return segments
 
 def save_transcription(segments, output_filename):
-    st.write("Processing transcription. May take longer sometimes😁")
+    st.write("Processing transcription. May take longer sometimes 😅...")
 
     
     progress_bar = st.progress(0)
