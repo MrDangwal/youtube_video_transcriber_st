@@ -32,7 +32,7 @@ def transcribe_audio(filename):
     return segments
 
 def save_transcription(segments, output_filename):
-    st.write("Processing transcription...")
+    st.write("Processing transcription. May take longer sometimes😁")
 
     
     progress_bar = st.progress(0)
